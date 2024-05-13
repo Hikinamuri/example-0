@@ -4,6 +4,7 @@ import axios from 'axios';
 import cl from './index.module.css';
 
 import logo from '../../assets/logo.png';
+import defaultLogo from '../../assets/default.png'
 
 import developing from '../../assets/developing.png';
 import copywriter from '../../assets/copywriter.png';
@@ -21,6 +22,7 @@ interface Client {
     login: string;
     first_name: string;
     work_type: string;
+    profile_photo: string;
     // Другие поля, если есть
 }
 
@@ -101,9 +103,19 @@ export const Home = () => {
                 <div className={cl.speciality_list}>
                     {clients.map(client => (
                         <div className={cl.client_card}>
-                            <p>{client.first_name}</p>
-                            <p>{client.login}</p>
-                            <span>{client.work_type}</span>
+                            <img src={client.profile_photo} alt='' />
+                            <div className={cl.client_info_work_type}>
+                                <div className={cl.client_info}>
+                                    <p>{client.first_name}</p>
+                                    <p>@{client.login}</p>
+                                </div>
+                                {client.work_type ? (
+                                    <p className={cl.work_type}>{client.work_type}</p>
+                                ) : (
+                                    ''
+                                )
+                                }
+                            </div>
                         </div>
                     ))}
                 </div>

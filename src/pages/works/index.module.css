@@ -3,10 +3,13 @@
     flex-direction: column;
     /* justify-content: center; */
     align-items: center;
+    width: 100%;
+    margin-top: 20px;
+
 }
 
 .search {
-    width: 50%;
+    width: 65%;
     border: 1px solid black;
     padding: 5px 25px;
     border-radius: 15px;
@@ -17,7 +20,10 @@
     background-position-x: 5px;
     display: flex;
     align-items: center;
-    
+}
+
+.speciality_header {
+    width: 100%;
 }
 
 .search_div {

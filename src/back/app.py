@@ -116,12 +116,12 @@ def auth_user():
 @app.route('/api/get-users', methods=['GET'])
 def get_users():
     cur = conn.cursor()
-    cur.execute("SELECT id, login, first_name, work_type FROM clients")
+    cur.execute("SELECT id, login, first_name, work_type, profile_photo FROM clients")
     users = cur.fetchall()
     cur.close()
 
     # Преобразование результата запроса в список словарей
-    user_list = [{'id': user[0], 'login': user[1], 'first_name': user[2], 'work_type': user[3]} for user in users]
+    user_list = [{'id': user[0], 'login': user[1], 'first_name': user[2], 'work_type': user[3], 'profile_photo': user[4]} for user in users]
 
     return jsonify(user_list), 200
 

@@ -73,7 +73,7 @@ export const Works = () => {
                     </div>
                 )}
             </div>
-            <div>
+            <div className={cl.speciality_header}>
                 <div className={cl.speciality}>
                     <p className={cl.speciality_text}>Задачи</p>
                     <div className={cl.speciality_list}>
