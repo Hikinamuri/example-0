@@ -10,6 +10,7 @@ RUN apt-get update \
         npm
 
 COPY package.json /app/package.json
+COPY .nvmrc /app/.nvmrc
 COPY requirements.txt /app/requirements.txt
 
 RUN npm install
