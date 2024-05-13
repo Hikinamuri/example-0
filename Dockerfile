@@ -1,4 +1,5 @@
 FROM pypy:3.10-7-slim as python-base
+WORKDIR /app
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         curl \
