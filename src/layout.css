@@ -1,0 +1,46 @@
+body {
+    color: black;
+    font-family: Roboto;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+.body {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* .statistics {
+    min-height: calc(100vh - 9vh - 40px);
+    background-color: white;
+    flex-grow: 1;
+    margin: 0 1vh;
+    margin-top: 1vh;
+    transition: margin-left 0.5s;
+    border-radius: 15px;
+    border: solid 1px #D7D7D7;
+    padding: 15px;
+} */
+
+.statistics {
+    margin-top: 70px;
+}
+
+.active_button {
+    background-color: #0085FF !important;
+    color: white;
+    font-weight: 400;
+    font-size: 18px;
+}
+
+.button_list div {
+    background-color: white;
+    border-radius: 15px;
+    padding: 5px 10px;
+    font-size: 18px;
+}

@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+.header {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 70px;
+    width: 100%;
+    background-color: white;
+    /* justify-content: space-around; */
+}
+
+.header_image {
+    cursor: pointer;
+}
+
+.header img {
+    height: 70px;
+}
+
+.button_list {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-size: 18px !important; 
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.auth_reg {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    padding-right: 10px;
+    font-size: 18px !important; 
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.button_auth {
+    background-color: white;
+    border: 1px solid white;
+    font-weight: 400;
+}
+
+.button_reg {
+    background-color: #0085FF;
+    border: 1px solid white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    color: white;
+    font-weight: 400;
+    margin-right: 10px;
+    cursor: pointer;
+}
