@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { RegInput } from "./regInput/index.tsx";
 
 import './reg.css'
@@ -31,37 +32,7 @@ const RegistrationSchema = Yup.object().shape({
 });
 
 export const Reg = () => {
-    // const [file, setFile] = useState(null);
-
-    // const handleFileChange = (e: any) => {
-    //     setFile(e.target.files[0]);
-    // };
-
-    // const handleUpload = async () => {
-    //     if (!file) {
-    //         console.error("No file selected");
-    //         return;
-    //     }
-
-    //     const formData = new FormData();
-    //     formData.append('image', file);
-
-    //     if (typeof access_token !== 'string') return
-
-    //     try {
-    //         const response = await axios.post(`${baseURL}/api/upload-card-image`, formData, {
-    //             headers: {
-    //                 'Authorization': access_token,
-    //                 'Content-Type': 'multipart/form-data' 
-    //             }
-    //         });
-    //         console.log('Image uploaded successfully:', response.data);
-    //     } catch (error) {
-    //         console.error('Error uploading image:', error);
-    //     }        
-    // };
-
-
+    const navigate = useNavigate() 
     const sendRequest = async () => {
         // if (!file) {
         //     console.error("No file selected");
@@ -85,7 +56,7 @@ export const Reg = () => {
             setTimeout(() => {
                 if (response.status === 200 && !response.data.error) {
                     // Навигация пользователя после успешной авторизации
-                    // navigate('/auth');
+                    window.location.reload();
                 } else {
                     console.log(response.status);
                 }
@@ -132,14 +103,13 @@ export const Reg = () => {
                         error={registrationFormik.errors.price}
                     />
                     <RegInput
-                        placeholder={'Сроки'}
+                        placeholder={'Сроки (в часах)'}
                         value={registrationFormik.values.timer}
                         onChange={registrationFormik.handleChange}
                         name={'timer'}
                         error={registrationFormik.errors.timer}
                     />
                     <div className="form-group">
-                        <label htmlFor="categoryName">Категория</label>
                         <select
                             id="categoryName"
                             name="categoryName"

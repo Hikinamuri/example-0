@@ -10,6 +10,7 @@
     width: 100%;
     background-color: white;
     /* justify-content: space-around; */
+    z-index: 100;
 }
 
 .header_image {

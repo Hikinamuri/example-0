@@ -31,13 +31,14 @@ export const Works = () => {
     }
 
     const categories = [
-        'Программирование',
-        'Дизайн',
-        'Услуги',
-        'Работа с текстом',
-        'Маркетинг',
-        'Архитектура',
-        'Приложения'
+        { name: 'Все категории', id: ''},
+        { name: 'Программирование', id: 'Программирование'},
+        { name: 'Дизайн', id: 'Дизайн'},
+        { name: 'Услуги', id: 'Услуги'},
+        { name: 'Работа с текстом', id: 'Работа с текстом'},
+        { name: 'Маркетинг', id: 'Маркетинг'},
+        { name: 'Архитектура', id: 'Архитектура'},
+        { name: 'Приложения', id: 'Приложения'},
     ];
 
     const filteredCards = cards.filter(card => {
@@ -77,28 +78,34 @@ export const Works = () => {
                 <div className={cl.speciality}>
                     <p className={cl.speciality_text}>Задачи</p>
                     <div className={cl.speciality_list}>
-                        {filteredCards // Используем отфильтрованные карточки для отображения
+                        {filteredCards
                             .filter(card => !selectedCategory || card.categoryname === selectedCategory)
                             .map(card => (
                                 <div key={card.id} className={cl.card}>
-                                    <p>{card.card_name}</p>
-                                    <p>{card.categoryname}</p>
-                                    <p>{card.price}</p>
-                                    <p>{card.description}</p>
-                                    <span>{card.timer}</span>
+                                    <p className={cl.card_name} >{card.card_name}</p>
+                                    <div className={cl.price_time}>
+                                        <p className={cl.card_price}>{card.price} ₽</p>
+                                        {parseInt(card.timer) > 24 ? 
+                                            `${Math.floor(parseInt(card.timer) / 24)} дней ${parseInt(card.timer) % 24} часов` :
+                                            `${parseInt(card.timer)} часов`
+                                        }
+                                    </div>
+                                    <p className={cl.card_description}>{card.description}</p>
+                                    <p className={cl.categoryName}>{card.categoryname}</p>
                                 </div>
                         ))}
                     </div>
 
                     <div className={cl.categories}>
-                        Тип проекта
-                        <div className={cl.category}>
+                        <p className={cl.categories_text}>Тип проекта</p>
                             {categories.map(category => (
-                                <div key={category} onClick={() => setSelectedCategory(category)}>
-                                    {category}
+                                <div
+                                    className={cl.category}
+                                    key={category.id} 
+                                    onClick={() => setSelectedCategory(category.id)}>
+                                    {category.name}
                                 </div>
                             ))}
-                        </div>
                     </div>
                 </div>
             </div>

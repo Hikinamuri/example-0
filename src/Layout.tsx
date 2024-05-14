@@ -9,8 +9,6 @@ export const Layout = () => {
     return(
         <div className="body">
             <Header/>
-            {/* <Sidebar /> */}
-
             <div className="statistics">
                 <Outlet/>
             </div>

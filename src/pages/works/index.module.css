@@ -84,6 +84,7 @@
 
 .speciality_text {
     text-align: center;
+    font-size: 24px;
 }
 
 .speciality_list {
@@ -99,8 +100,43 @@
     flex-direction: column;
     width: 350px;
     height: 200px;
-    background-color: #EAEAEA;
-    margin-bottom: 20px;
+    background-color: #8fb7dd;
+    border-radius: 15px;
+    padding: 15px 15px;
+}
+
+.card:hover {
+    background-color: #71a6d8;
+}
+
+.card_name {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.card_price {
+    font-size: 24px;
+    font-weight: 500;
+    width: 30%;
+}
+
+.price_time {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.card_description {
+    height: 75px;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    
 }
 
 .categories {
@@ -108,10 +144,30 @@
     flex-direction: column;
     position: absolute;
     /* top: 0; */
-    left: 20%;
-    margin-top: 20px;
+    left: 15%;
+    /* margin-top: 5px; */
 }
+
+.categoryName {
+    margin: 0;
+    margin-top: 5px;
+}
+
+.categories_text {
+    /* text-align: center; */
+    font-size: 24px;
+}
+
 .category {
-    margin-top: 10px;
+    background-color: white;
+    border: 1px solid gray;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 10px;
     cursor: pointer;
+
+}
+
+.category:hover {
+    background-color: #f0e7e7;
 }

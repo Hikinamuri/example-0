@@ -116,7 +116,7 @@ def auth_user():
 @app.route('/api/get-users', methods=['GET'])
 def get_users():
     cur = conn.cursor()
-    cur.execute("SELECT id, login, first_name, work_type, profile_photo FROM clients")
+    cur.execute("SELECT id, login, first_name, work_type, profile_photo FROM clients WHERE type = false")
     users = cur.fetchall()
     cur.close()
 
@@ -124,6 +124,7 @@ def get_users():
     user_list = [{'id': user[0], 'login': user[1], 'first_name': user[2], 'work_type': user[3], 'profile_photo': user[4]} for user in users]
 
     return jsonify(user_list), 200
+
 
 
 
