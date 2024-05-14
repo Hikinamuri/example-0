@@ -40,6 +40,31 @@ export const Works = () => {
         }
     };
 
+    const addToMe = async (id: any) => {
+        try {
+            const access_token = localStorage.getItem('token'); // Получаем токен из локального хранилища
+
+            const requestData = {
+                card_id: id 
+            };
+    
+            const headers = {
+                'Authorization': `${access_token}`,
+                'Content-Type': 'application/json'
+            };
+
+            const response = await axios.post(`${baseURL}/api/add-to-me`, requestData, {
+                headers: headers
+            });
+    
+            console.log('Response:', response.data);
+            getCards()
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+    
+
     const categories = [
         { name: 'Все категории', id: ''},
         { name: 'Программирование', id: 'Программирование'},
@@ -116,7 +141,7 @@ export const Works = () => {
                                     ) : (
                                         <div 
                                             className={cl.delete_card}
-                                            onClick={() => toggleModal()}
+                                            onClick={() => addToMe(card.id)}
                                         >
                                             <p>Взять в работу</p>
                                         </div>

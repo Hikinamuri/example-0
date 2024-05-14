@@ -60,12 +60,36 @@ export const Competitions = () => {
     
 
     const getCards = () => {
-        axios.get(`${baseURL}/api/get-cards`)
+        axios.get(`${baseURL}/api/get-contest`)
         .then((response:any ) => {
             setCards(response.data);
             console.log(response.data, 'response')
         })
     }
+
+    const addToMe = async (id: any) => {
+        try {
+            const access_token = localStorage.getItem('token'); // Получаем токен из локального хранилища
+
+            const requestData = {
+                card_id: id 
+            };
+    
+            const headers = {
+                'Authorization': `${access_token}`,
+                'Content-Type': 'application/json'
+            };
+
+            const response = await axios.post(`${baseURL}/api/add-to-me-comp`, requestData, {
+                headers: headers
+            });
+    
+            console.log('Response:', response.data);
+            getCards()
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 
     useEffect(() => {
         getCards();
@@ -120,7 +144,7 @@ export const Competitions = () => {
                                     ) : (
                                         <div 
                                             className={cl.delete_card}
-                                            onClick={() => toggleModal()}
+                                            onClick={() => addToMe(card.id)}
                                         >
                                             <p>Взять в работу</p>
                                         </div>

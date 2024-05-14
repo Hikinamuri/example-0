@@ -322,5 +322,72 @@ def delete_card(card_id):
     
 
 
+@app.route('/api/add-to-me', methods=['POST'])
+def add_to_me():
+    # Получаем id выбранной карточки из тела запроса
+    card_id = request.json.get('card_id')
+
+    if not card_id:
+        return jsonify({'error': 'Card id not provided'}), 400
+
+    # Получаем токен авторизации из заголовков запроса
+    authorization_token = request.headers.get('Authorization')
+
+    if not authorization_token:
+        return jsonify({'error': 'Authorization token not provided'}), 401
+
+    # Проверяем наличие пользователя с данным токеном авторизации
+    cur = conn.cursor()
+    cur.execute("SELECT id FROM clients WHERE token = %s", (authorization_token,))
+    user_result = cur.fetchone()
+
+    if not user_result:
+        return jsonify({'error': 'User not found'}), 404
+
+    user_id = user_result[0]
+
+    # Здесь выполняется добавление выбранной карточки к пользователю с указанным id
+    # Например:
+    cur.execute("INSERT INTO user_cards (user_id, card_id) VALUES (%s, %s)", (user_id, card_id))
+    cur.execute("UPDATE cards SET in_works = true WHERE id = %s", (card_id,))
+    conn.commit()
+
+    return jsonify({'message': 'Card added successfully'}), 200
+
+
+
+@app.route('/api/add-to-me-comp', methods=['POST'])
+def add_to_me_comp():
+    # Получаем id выбранной карточки из тела запроса
+    card_id = request.json.get('card_id')
+
+    if not card_id:
+        return jsonify({'error': 'Card id not provided'}), 400
+
+    # Получаем токен авторизации из заголовков запроса
+    authorization_token = request.headers.get('Authorization')
+
+    if not authorization_token:
+        return jsonify({'error': 'Authorization token not provided'}), 401
+
+    # Проверяем наличие пользователя с данным токеном авторизации
+    cur = conn.cursor()
+    cur.execute("SELECT id FROM clients WHERE token = %s", (authorization_token,))
+    user_result = cur.fetchone()
+
+    if not user_result:
+        return jsonify({'error': 'User not found'}), 404
+
+    user_id = user_result[0]
+
+    # Здесь выполняется добавление выбранной карточки к пользователю с указанным id
+    # Например:
+    cur.execute("INSERT INTO user_cards (user_id, card_id) VALUES (%s, %s)", (user_id, card_id))
+    cur.execute("UPDATE competitions SET in_works = true WHERE id = %s", (card_id,))
+    conn.commit()
+
+    return jsonify({'message': 'Card added successfully'}), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
