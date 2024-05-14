@@ -127,6 +127,19 @@ def get_users():
 
 
 
+@app.route('/api/get-employeers', methods=['GET'])
+def get_employeers():
+    cur = conn.cursor()
+    cur.execute("SELECT id, login, first_name, work_type, profile_photo FROM clients WHERE type = true")
+    users = cur.fetchall()
+    cur.close()
+
+    # Преобразование результата запроса в список словарей
+    user_list = [{'id': user[0], 'login': user[1], 'first_name': user[2], 'work_type': user[3], 'profile_photo': user[4]} for user in users]
+
+    return jsonify(user_list), 200
+
+
 
 @app.route('/api/upload-image', methods=['POST'])
 def upload_image():

@@ -1,12 +1,12 @@
 import wl from '../../assets/wl.png';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './index.css';
 
 export const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [token, setToken] = useState(localStorage.getItem('token'));
+    const token = useState(localStorage.getItem('token'));
 
     const buttons = [
         { name: "Работа", link: "/works" },

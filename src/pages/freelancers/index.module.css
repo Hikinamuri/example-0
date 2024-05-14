@@ -1,0 +1,332 @@
+.home_page {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.home_page_text {
+    display: flex;
+    /* align-items: center; */
+    justify-content: space-around;
+    width: 100%;
+}
+
+.home_page_text p {
+    font-size: 64px;
+    padding: 0;
+    text-align: left;
+}
+
+@keyframes slideIn {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+  
+  /* index.module.css */
+
+@keyframes slideOut {
+    0% {
+      opacity: 1;
+      margin-left: 0;
+    }
+    100% {
+      opacity: 0;
+      margin-left: 100%;
+    }
+  }
+  
+  
+  .container {
+    animation: slideIn 1s ease-out forwards;
+    /* animation-delay: 1s; */
+    min-height: 100%;
+    display: flex;
+    justify-content: top;
+    align-items: top;
+    position: absolute;
+    font-size: 24px;
+  }
+  
+  .slideOutAnimation {
+    animation: slideOut 1s ease-in forwards;
+    /* animation-delay: 3s; */
+  }
+
+.speciality {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    /* height: auto; */
+}
+
+.speciality p {
+    text-align: center;
+    font-size: 20px;
+}
+
+.speciality_list {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    align-self: center;
+    justify-content: center;
+}
+
+.speciality_card {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #EAEAEA;
+    width: 300px;
+    height: 200px;
+    margin: 0 20px 20px 0;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+.speciality_card img {
+    height: 150px;
+}
+
+.client_card {
+    display: flex;
+    padding: 5px;
+    background-color: #EAEAEA;
+    margin: 0 20px 20px 0;
+    width: 200px;
+    height: 100px;
+    border-radius: 15px;
+    align-items: center;
+}
+
+.client_card {
+    white-space: pre;
+
+}
+
+.client_card img {
+    display: flex;
+    height: 80px;
+    width: 80px;
+    padding: 5px;
+    margin: 0;
+    object-fit: cover;
+    border-radius: 50px;
+    align-items: center;
+    background-color: transparent !important;
+    border: 1px solid transparent;
+}
+
+.client_info {
+    display: flex;
+    flex-direction: column;
+    height: 80px;
+    padding: 0;
+    margin-left: auto;    
+    padding-right: 10px;
+    
+}
+
+.client_info p {
+    font-size: 16px;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.work_type {
+    display: flex;
+    font-size: 14px !important;
+    padding: 5px;
+    background-color: white !important;
+    border-radius: 10px;
+    margin-top: auto;
+}
+
+.client_info_work_type {
+    display: flex;
+    flex-direction: column;
+    /* margin-top: 20px; */
+    height: 100px;
+}
+
+.works_page {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+
+}
+
+.search {
+    width: 65%;
+    border: 1px solid black;
+    padding: 5px 25px;
+    border-radius: 15px;
+    background-image: url('../../assets/search.svg');
+    background-size: 18px;
+    background-repeat: no-repeat;
+    background-position-y: center;
+    background-position-x: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.speciality_header {
+    width: 100%;
+}
+
+.search_div {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    height: 30px;
+    align-items: center;
+    gap: 20px;
+}
+
+.add_card {
+    height: 20px;
+    width: fit-content;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.add_card p{
+    user-select: none;
+}
+
+.modalBackground {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.modalContent {
+    display: flex;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 350px;
+    height: 350px;
+    /* background-color: white; */
+    z-index: 101;
+    color: black;
+}
+
+.speciality {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.speciality_text {
+    text-align: center;
+    font-size: 24px;
+}
+
+.speciality_list {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-left: auto;
+    gap: 20px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    height: 200px;
+    background-color: #8fb7dd;
+    border-radius: 15px;
+    padding: 15px 15px;
+}
+
+.card:hover {
+    background-color: #71a6d8;
+}
+
+.card_name {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.card_price {
+    font-size: 24px;
+    font-weight: 500;
+    width: 30%;
+}
+
+.price_time {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.card_description {
+    height: 75px;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    
+}
+
+.categories {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    /* top: 0; */
+    left: 15%;
+    /* margin-top: 5px; */
+}
+
+.categoryName {
+    margin: 0;
+    margin-top: 5px;
+}
+
+.categories_text {
+    /* text-align: center; */
+    font-size: 24px;
+}
+
+.category {
+    background-color: white;
+    border: 1px solid gray;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+
+}
+
+.category:hover {
+    background-color: #f0e7e7;
+}

@@ -18,10 +18,6 @@
     text-align: left;
 }
 
-.main_text {
-
-}
-
 @keyframes slideIn {
     0% {
       transform: translateX(-100%);

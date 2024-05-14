@@ -1,9 +1,8 @@
 // import React from "react";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { baseURL } from "../../baseUtl.ts";
-import { useState } from "react";
 import * as Yup from "yup";
 import axios from "axios";
 import { RegInput } from "./regInput/index.tsx";

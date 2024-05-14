@@ -1,9 +1,7 @@
 import { baseURL } from "../../../baseUtl.ts";
 import { useFormik } from "formik";
-import { useState } from "react";
 import * as Yup from "yup";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { RegInput } from "./regInput/index.tsx";
 
 import './reg.css'
@@ -32,15 +30,7 @@ const RegistrationSchema = Yup.object().shape({
 });
 
 export const Reg = () => {
-    const navigate = useNavigate() 
     const sendRequest = async () => {
-        // if (!file) {
-        //     console.error("No file selected");
-        //     return;
-        // }
-
-        // const formData = new FormData();
-        // formData.append('image', file);
 
         try {
             const response = await axios.post(`${baseURL}/api/add-card`, {
