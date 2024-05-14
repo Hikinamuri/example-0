@@ -108,7 +108,14 @@ export const Profile = () => {
             {!image && (
                 <>
                     <label className={cl.uploadBtn} htmlFor="file">Choose Image</label>
-                    <input className={cl.inputFile} id="file" type="file" onChange={handleFileChange} />
+                    <input 
+                        className={cl.inputFile} 
+                        id="file" 
+                        type="file" 
+                        accept=".png, .jpg, .jpeg"
+                        onChange={handleFileChange} 
+                    />
+
                     <button className={cl.uploadBtn} onClick={handleUpload}>Upload</button>
                 </>
             )}

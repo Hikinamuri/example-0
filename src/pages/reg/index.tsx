@@ -17,6 +17,7 @@ const initialValues = {
     patronymic: '',
     email: '',
     userType: true,
+    categoryName: '',
     password: '',
     password2: '',
 };
@@ -29,6 +30,7 @@ const RegistrationSchema = Yup.object().shape({
     password2: Yup.string()
         .oneOf([Yup.ref('password')], 'Passwords must match')
         .required("Repeat of password is required"),
+    categoryName: Yup.string().required("Category is required"),
 });
 
 export const Reg = () => {
@@ -38,6 +40,17 @@ export const Reg = () => {
         const emailRegex = /@../;
         return emailRegex.test(email);
     }
+
+    const categories = [
+        { name: 'Все категории', id: ''},
+        { name: 'Программирование', id: 'Программирование'},
+        { name: 'Дизайн', id: 'Дизайн'},
+        { name: 'Услуги', id: 'Услуги'},
+        { name: 'Работа с текстом', id: 'Работа с текстом'},
+        { name: 'Маркетинг', id: 'Маркетинг'},
+        { name: 'Архитектура', id: 'Архитектура'},
+        { name: 'Приложения', id: 'Приложения'},
+    ];
 
     // const checkPasswordReady = (password: string) => {
     //     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^\w\s]).{8,}/;
@@ -96,6 +109,7 @@ export const Reg = () => {
                 email: registrationFormik.values.email, 
                 password: registrationFormik.values.password,
                 userType: registrationFormik.values.userType === 'customer',
+                categoryName: registrationFormik.values.categoryName, 
             });
             console.log('request', response)
     
@@ -137,7 +151,7 @@ export const Reg = () => {
             </div> */}
             <div className="auth_form">
                 <form className="auth_form_inputs" onSubmit={registrationFormik.handleSubmit}>
-                    <p className="company_name">Тат<p>Платформа</p></p>
+                    <p className="company_name">WiseLance</p>
                     <RegInput
                         placeholder={'Имя пользователя'}
                         value={registrationFormik.values.login}
@@ -173,6 +187,24 @@ export const Reg = () => {
                         name={'email'}
                         error={registrationFormik.errors.email}
                     />
+                    <div className="form-group">
+                        <select
+                            id="categoryName"
+                            name="categoryName"
+                            onChange={registrationFormik.handleChange}
+                            onBlur={registrationFormik.handleBlur}
+                            value={registrationFormik.values.categoryName}
+                            className={`form-control ${registrationFormik.touched.categoryName && registrationFormik.errors.categoryName ? 'is-invalid' : ''}`}
+                        >
+                            <option value="">Выберите категорию</option>
+                            {categories.map(category => (
+                                <option key={category.id} value={category.id}>{category.name}</option>
+                            ))}
+                        </select>
+                        {registrationFormik.touched.categoryName && registrationFormik.errors.categoryName ? (
+                            <div className="invalid-feedback">{registrationFormik.errors.categoryName}</div>
+                        ) : null}
+                    </div>
                     <RegInput
                         placeholder={'Пароль'}
                         value={registrationFormik.values.password}
@@ -189,27 +221,30 @@ export const Reg = () => {
                         error={registrationFormik.errors.password2}
                         type="password"
                     />
-                    <div>
-                        <input
-                            type="radio"
-                            id="customer"
-                            name="userType"
-                            value="customer"
-                            checked={registrationFormik.values.userType === 'customer'}
-                            onChange={() => setUserType('customer')}
-                        />
-                        <label htmlFor="customer">Вы заказчик?</label>
-                    </div>
-                    <div>
-                        <input
-                            type="radio"
-                            id="user"
-                            name="userType"
-                            value="user"
-                            checked={registrationFormik.values.userType === 'user'}
-                            onChange={() => setUserType('user')}
-                        />
-                        <label htmlFor="user">Вы пользователь?</label>
+
+                    <div className="radio_buttons">
+                        <div>
+                            <input
+                                type="radio"
+                                id="customer"
+                                name="userType"
+                                value="customer"
+                                checked={registrationFormik.values.userType === 'customer'}
+                                onChange={() => setUserType('customer')}
+                            />
+                            <label htmlFor="customer">Вы заказчик?</label>
+                        </div>
+                        <div>
+                            <input
+                                type="radio"
+                                id="user"
+                                name="userType"
+                                value="user"
+                                checked={registrationFormik.values.userType === 'user'}
+                                onChange={() => setUserType('user')}
+                            />
+                            <label htmlFor="user">Вы пользователь?</label>
+                        </div>
                     </div>
 
                     <button type="submit" className="auth_button">

@@ -68,8 +68,8 @@ def save_user():
 
     # Сохранение пользователя в базе данных
     cur = conn.cursor()
-    cur.execute("INSERT INTO clients (login, last_name, first_name, patronymic, email, password, type) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-            (data['login'], data['last_name'], data['first_name'], data['patronymic'], data['email'], hashed_password, data['userType']))
+    cur.execute("INSERT INTO clients (login, last_name, first_name, patronymic, email, password, type, work_type) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+            (data['login'], data['last_name'], data['first_name'], data['patronymic'], data['email'], hashed_password, data['userType'], data['categoryName']))
 
     conn.commit()
     cur.close()

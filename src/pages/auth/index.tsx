@@ -75,7 +75,7 @@ export const Authorization = () => {
         <div className="auth">
             <div className="auth_form">
                 <form className="auth_form_inputs" onSubmit={formik.handleSubmit}>
-                    <p className="company_name">Тат<p>Платформа</p></p>
+                    <p className="company_name">WiseLance</p>
                     {formik.errors.email && (
                         <div className="error-message">
                             {formik.errors.email}
