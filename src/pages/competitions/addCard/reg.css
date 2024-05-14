@@ -1,0 +1,36 @@
+.form-group {
+    margin-bottom: 1rem; /* Отступ снизу */
+}
+
+.form-group label {
+    margin-bottom: 0.5rem; /* Отступ между меткой и элементом формы */
+    display: block; /* Размещение метки на отдельной строке */
+}
+
+.form-control {
+    width: 100%; /* Ширина элемента формы */
+    padding: 0.5rem; /* Внутренний отступ */
+    font-size: 1rem; /* Размер шрифта */
+    border: 1px solid #ced4da; /* Граница элемента */
+    border-radius: 0.25rem; /* Скругление углов */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; /* Плавное изменение цвета границы и тени */
+}
+
+.form-control:focus {
+    border-color: #80bdff; /* Цвет границы при фокусе */
+    outline: 0; /* Убираем стандартный фокусовый контур */
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Тень при фокусе */
+}
+
+.invalid-feedback {
+    color: #dc3545; /* Цвет сообщения об ошибке */
+    display: none; /* По умолчанию скрыто */
+}
+
+.is-invalid .form-control {
+    border-color: #dc3545; /* Цвет границы для недопустимого значения */
+}
+
+.is-invalid .invalid-feedback {
+    display: block; /* Отображаем сообщение об ошибке */
+}

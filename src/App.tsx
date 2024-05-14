@@ -9,6 +9,7 @@ import { Home } from './pages/home';
 import { Works } from './pages/works';
 import { Profile } from './pages/profile';
 import { Freelancers } from './pages/freelancers';
+import { Competitions} from './pages/competitions';
 
 
 import './App.css';
@@ -25,6 +26,7 @@ function App() {
             <Route path="home" element={<Home />} />
             <Route path="works" element={<Works />} />
             <Route path="freelancers" element={<Freelancers />} />
+            <Route path="competitions" element={<Competitions />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>

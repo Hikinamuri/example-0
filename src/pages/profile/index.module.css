@@ -1,0 +1,56 @@
+.profile{
+    display: flex;
+    margin-top: 10px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile img {
+    height: 350px;
+    width: 350px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: none; /* Убираем обычную границу */
+    box-shadow: 0 0 20px rgba(0, 0, 255, 1); /* Размытая граница синего цвета */
+}
+
+
+.inputFile {
+    display: none;
+  }
+  
+.uploadBtn {
+background-color: #4caf50; /* Цвет фона кнопки */
+color: white; /* Цвет текста */
+padding: 10px 20px; /* Отступы внутри кнопки */
+border: none; /* Убрать границу */
+border-radius: 5px; /* Закруглить углы */
+cursor: pointer; /* Задать курсор при наведении */
+}
+
+.uploadBtn:hover {
+background-color: #45a049; /* Изменить цвет фона при наведении */
+}
+
+.exitButton {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #0085FF;
+    padding: 10px 15px;
+    border-radius: 15px;
+    color: white;
+    cursor: pointer;
+}
+
+.mainIfo {
+    display: flex;
+    margin-left: 15px;
+    gap: 10px;
+}
+
+.mainIfo p {
+    font-size: 28px;
+    margin: 0;
+}

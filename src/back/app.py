@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import JWTManager
 import psycopg2
+from psycopg2 import OperationalError
 import bcrypt
 import boto3
 from werkzeug.utils import secure_filename
@@ -156,14 +157,19 @@ def upload_image():
         filename = secure_filename(file.filename)
         cur = conn.cursor()
         cur.execute("SELECT id FROM clients WHERE token = %s", (headers['Authorization'],))
-        userId = cur.fetchone()[0]
-        s3_key = f"uploads/{userId}/{filename}"
-        if upload_file_to_s3(file, s3_key):
-            cur.execute("UPDATE clients SET profile_photo = %s WHERE token = %s", (f'https://f8227d6f-1ac14f84-99ef-4e5f-80e3-92250408b33e.s3.timeweb.cloud/uploads/{userId}/{filename}', headers['Authorization']))
-            conn.commit()
-            return jsonify({'message': 'Image uploaded successfully', 'filename': f'https://s3.timeweb.cloud/f8227d6f-1ac14f84-99ef-4e5f-80e3-92250408b33e/uploads/{userId}/{filename}'}), 200
+        print(headers['Authorization'])
+        result = cur.fetchone()
+        if result:
+            userId = result[0]
+            s3_key = f"uploads/{userId}/{filename}"
+            if upload_file_to_s3(file, s3_key):
+                cur.execute("UPDATE clients SET profile_photo = %s WHERE token = %s", (f'https://f8227d6f-1ac14f84-99ef-4e5f-80e3-92250408b33e.s3.timeweb.cloud/uploads/{userId}/{filename}', headers['Authorization']))
+                conn.commit()
+                return jsonify({'message': 'Image uploaded successfully', 'filename': f'https://s3.timeweb.cloud/f8227d6f-1ac14f84-99ef-4e5f-80e3-92250408b33e/uploads/{userId}/{filename}'}), 200
+            else:
+                return jsonify({'error': 'Failed to upload image to S3'}), 500
         else:
-            return jsonify({'error': 'Failed to upload image to S3'}), 500
+            return jsonify({'error': 'User not found'}), 404
 
 
 
@@ -179,6 +185,28 @@ def get_image():
     else: 
         return jsonify({'error': 'Failed to upload image to S3'}), 500
     
+
+
+@app.route('/api/get-profile', methods=['POST'])
+def get_profile():
+    headers = request.headers
+    cur = conn.cursor()
+
+    # Запрос данных о клиенте
+    cur.execute("SELECT first_name, last_name, work_type, taken_cards FROM clients WHERE token = %s", (headers['Authorization'],))
+    client_data = cur.fetchone()
+    if not client_data:
+        return jsonify({'error': 'User not found'}), 404
+
+    first_name, last_name, work_type, taken_cards = client_data
+
+    return jsonify({
+        'first_name': first_name,
+        'last_name': last_name,
+        'work_type': work_type,
+        'taken_cards': taken_cards
+    }), 200
+
 
 
 @app.route('/api/add-card', methods=['POST'])
@@ -212,16 +240,86 @@ def add_card():
 
 @app.route('/api/get-cards', methods=['GET'])
 def get_cards():
+    try:
+        cur = conn.cursor()
+
+        # Проверяем, открыта ли текущая транзакция
+        if not conn.isolation_level:
+            conn.rollback()
+
+        cur.execute("SELECT id, price, description, timer, categoryname, card_name FROM cards WHERE in_works = false")
+        cards = cur.fetchall()
+        cur.close()
+
+        card_list = [{'id': card[0], 'price': card[1], 'description': card[2], 'timer': card[3], 'categoryname': card[4], 'card_name': card[5]} for card in cards]
+
+        return jsonify(card_list), 200
+    except OperationalError as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+@app.route('/api/add-contest', methods=['POST'])
+def add_contest():
+    data = request.json
+    # Получаем данные из запроса формы
+    name = data['name']
+    price = data['price']
+    description = data['description']
+    timer = data['timer']
+    categoryName = data['categoryName']
+    
+
+    # Проверяем наличие обязательных полей
+    print("Data to insert:", name, price, description, timer, categoryName)
+
+    if not all([name, price, description, timer, categoryName]):
+        return jsonify({'error': 'Missing fields'}), 400
+    
+
+    # Сохраняем пользователя в базе данных
     cur = conn.cursor()
-    cur.execute("SELECT id, price, description, timer, categoryname, card_name FROM cards")
-    users = cur.fetchall()
+    cur.execute("INSERT INTO competitions (cards, price, description, timer, categoryname, in_works) VALUES (%s, %s, %s, %s, %s, %s)",
+            (name, price, description, timer, categoryName, 'false'))
+    conn.commit()
     cur.close()
 
-    # Преобразование результата запроса в список словарей
-    user_list = [{'id': user[0], 'price': user[1], 'description': user[2], 'timer': user[3], 'categoryname': user[4], 'card_name': user[5]} for user in users]
+    return jsonify({'message': 'Card saved successfully'}), 200
 
-    return jsonify(user_list), 200
+
+
+@app.route('/api/get-contest', methods=['GET'])
+def get_contest():
+    try:
+        cur = conn.cursor()
+
+        # Проверяем, открыта ли текущая транзакция
+        if not conn.isolation_level:
+            conn.rollback()
+
+        cur.execute("SELECT id, price, description, timer, categoryname, cards FROM competitions WHERE in_works = false")
+        cards = cur.fetchall()
+        cur.close()
+
+        card_list = [{'id': card[0], 'price': card[1], 'description': card[2], 'timer': card[3], 'categoryname': card[4], 'cards': card[5]} for card in cards]
+
+        return jsonify(card_list), 200
+    except OperationalError as e:
+        return jsonify({"error": str(e)}), 500
         
+
+
+@app.route('/api/delete-card/<int:card_id>', methods=['DELETE'])
+def delete_card(card_id):
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM cards WHERE id = %s", (card_id,))
+        conn.commit()
+        cur.close()
+        return jsonify({"message": "Card deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 
 
 if __name__ == "__main__":

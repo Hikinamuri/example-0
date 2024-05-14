@@ -7,14 +7,14 @@ import { baseURL } from '../../baseUtl';
 
 interface Cards {
     id: string;
-    card_name: string;
+    cards: string;
     categoryname: string;
     description: string;
     price: string;
     timer: string;
 }
 
-export const Works = () => {
+export const Competitions = () => {
     const userType = localStorage.getItem('type');
     const [checked, setChecked] = useState(false);
     const [cards, setCards] = useState<Cards[]>([]);
@@ -52,8 +52,12 @@ export const Works = () => {
     ];
 
     const filteredCards = cards.filter(card => {
-        return card.card_name.toLowerCase().includes(searchTerm.toLowerCase()) || card.description.toLowerCase().includes(searchTerm.toLowerCase()) || card.categoryname.toLowerCase().includes(searchTerm.toLowerCase());
+        const cardName = card.cards ? card.cards.toLowerCase() : '';
+        const description = card.description ? card.description.toLowerCase() : '';
+        const categoryName = card.categoryname ? card.categoryname.toLowerCase() : '';
+        return cardName.includes(searchTerm.toLowerCase()) || description.includes(searchTerm.toLowerCase()) || categoryName.includes(searchTerm.toLowerCase());
     });
+    
 
     const getCards = () => {
         axios.get(`${baseURL}/api/get-cards`)
@@ -90,13 +94,13 @@ export const Works = () => {
             </div>
             <div className={cl.speciality_header}>
                 <div className={cl.speciality}>
-                    <p className={cl.speciality_text}>Задачи</p>
+                    <p className={cl.speciality_text}>Конкурсы</p>
                     <div className={cl.speciality_list}>
                         {filteredCards
                             .filter(card => !selectedCategory || card.categoryname === selectedCategory)
                             .map(card => (
                                 <div key={card.id} className={cl.card}>
-                                    <p className={cl.card_name} >{card.card_name}</p>
+                                    <p className={cl.card_name} >{card.cards}</p>
                                     <div className={cl.price_time}>
                                         <p className={cl.card_price}>{card.price} ₽</p>
                                         {parseInt(card.timer) > 24 ? 
