@@ -16,7 +16,7 @@ import './App.css';
 
 function App() {
   return (
-    <Provider store={store}> {/* Оберните ваше приложение в Provider */}
+    <Provider store={store}>
       <Router>
         <Routes>
           <Route path="/auth" element={<Authorization />} />

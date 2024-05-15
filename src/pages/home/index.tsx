@@ -13,7 +13,6 @@ import management from '../../assets/management.png';
 import marketing from '../../assets/marketing.png';
 import smm_manager from '../../assets/smm_manager.png';
 
-
 import { baseURL } from "../../baseUtl.ts";
 
 
@@ -23,7 +22,6 @@ interface Client {
     first_name: string;
     work_type: string;
     profile_photo: string;
-    // Другие поля, если есть
 }
 
 export const Home = () => {

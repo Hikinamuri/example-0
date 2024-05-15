@@ -23,15 +23,38 @@ const initialValues = {
 };
 
 const RegistrationSchema = Yup.object().shape({
+    login: Yup.string()
+        .trim()
+        .max(20, 'Не более 20 символов')
+        .required("Имя пользователя обязательно"),
+    last_name: Yup.string()
+        .trim()
+        .max(20, 'Не более 20 символов')
+        .required("Фамилия обязательна"),
+    first_name: Yup.string()
+        .trim()
+        .max(20, 'Не более 20 символов')
+        .required("Имя обязательно"),
+    patronymic: Yup.string()
+        .trim()
+        .max(20, 'Не более 20 символов'),
     email: Yup.string()
-        .email("Invalid email address format")
-        .required("Email is required"),
-    password: Yup.string().required(),
+        .trim()
+        .email("Некорректный формат адреса электронной почты")
+        .required("Email обязателен"),
+    categoryName: Yup.string()
+        .required("Категория обязательна"),
+    password: Yup.string()
+        .trim()
+        .min(6, 'Пароль должен содержать минимум 6 символов')
+        .max(18, 'Пароль должен содержать не более 18 символов')
+        .required("Пароль обязателен"),
     password2: Yup.string()
-        .oneOf([Yup.ref('password')], 'Passwords must match')
-        .required("Repeat of password is required"),
-    categoryName: Yup.string().required("Category is required"),
+        .trim()
+        .oneOf([Yup.ref('password')], 'Пароли должны совпадать')
+        .required("Подтверждение пароля обязательно"),
 });
+
 
 export const Reg = () => {
     const navigate = useNavigate();
@@ -92,7 +115,8 @@ export const Reg = () => {
             badRegistration({
                 type: notificationsActionConstants.BAD_REGISTRATION,
                 payload: phraseArr.join('.')
-            })
+        });
+        
 
             return false
        } else return true
@@ -159,6 +183,9 @@ export const Reg = () => {
                         name={'login'}
                         error={registrationFormik.errors.login}
                     />
+                    {registrationFormik.errors.login && registrationFormik.touched.login && (
+                        <div className="error">{registrationFormik.errors.login}</div>
+                    )}
                     <RegInput
                         placeholder={'Фамилия'}
                         value={registrationFormik.values.last_name}
@@ -166,6 +193,9 @@ export const Reg = () => {
                         name={'last_name'}
                         error={registrationFormik.errors.last_name}
                     />
+                    {registrationFormik.errors.last_name && registrationFormik.touched.last_name && (
+                        <div className="error">{registrationFormik.errors.last_name}</div>
+                    )}
                     <RegInput
                         placeholder={'Имя'}
                         value={registrationFormik.values.first_name}
@@ -173,6 +203,9 @@ export const Reg = () => {
                         name={'first_name'}
                         error={registrationFormik.errors.first_name}
                     />
+                    {registrationFormik.errors.first_name && registrationFormik.touched.first_name && (
+                        <div className="error">{registrationFormik.errors.first_name}</div>
+                    )}
                     <RegInput
                         placeholder={'Отчество'}
                         value={registrationFormik.values.patronymic}
@@ -187,6 +220,10 @@ export const Reg = () => {
                         name={'email'}
                         error={registrationFormik.errors.email}
                     />
+                    {registrationFormik.errors.email && registrationFormik.touched.email && (
+                        <div className="error">{registrationFormik.errors.email}</div>
+                    )}
+
                     <div className="form-group">
                         <select
                             id="categoryName"
@@ -213,6 +250,9 @@ export const Reg = () => {
                         error={registrationFormik.errors.password}
                         type="password"
                     />
+                    {registrationFormik.errors.password && registrationFormik.touched.password && (
+                        <div className="error">{registrationFormik.errors.password}</div>
+                    )}
                     <RegInput
                         placeholder={'Повторите пароль'}
                         value={registrationFormik.values.password2}
@@ -221,7 +261,9 @@ export const Reg = () => {
                         error={registrationFormik.errors.password2}
                         type="password"
                     />
-
+                    {registrationFormik.errors.password2 && registrationFormik.touched.password2 && (
+                        <div className="error">{registrationFormik.errors.password2}</div>
+                    )}
                     <div className="radio_buttons">
                         <div>
                             <input
