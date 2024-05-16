@@ -6,13 +6,22 @@ import { RegInput } from "./regInput/index.tsx";
 
 import './reg.css'
 
-const initialValues = {
+interface InitialValues {
+    name: string;
+    price: string;
+    description: string;
+    timer: string;
+    categoryName: string;
+}
+
+const initialValues: InitialValues = {
     name: '',
     price: '',
     description: '',
     timer: '',
     categoryName: '',
 };
+
 
 const categories = [
     'Программирование',
@@ -25,8 +34,28 @@ const categories = [
 ];
 
 const RegistrationSchema = Yup.object().shape({
-    categoryName: Yup.string().required("Category is required"),
-    // Add other validations for other fields
+    name: Yup.string()
+        .trim()
+        .min(50, 'Не менее 5 символов')
+        .max(20, 'Не более 20 символов')
+        .required("Название товара обязательно"),
+    description: Yup.string()
+        .trim()
+        .min(20, 'Не менее 20 символов')
+        .max(120, 'Не более 120 символов')
+        .required("Описание обязательно"),
+    price: Yup.string()
+        .trim()
+        .min(1, 'Не менее 1 символа')
+        .max(20, 'Не более 20 символов')
+        .required("Цена обязательно"),
+    timer: Yup.string()
+        .trim()
+        .min(1, 'Не менее 1 символа')
+        .max(20, 'Не более 20 символов')
+        .required("Сроки работы обязательны"),
+    categoryName: Yup.string()
+        .required("Категория обязательна"),
 });
 
 export const Reg = () => {
@@ -62,6 +91,22 @@ export const Reg = () => {
         onSubmit: () => {
             if (() => checkValidationReady()) sendRequest();
         },
+        validateOnChange: true,
+        validateOnBlur: true,
+        validate: (values: InitialValues) => {
+            const errors: Partial<InitialValues> = {};
+        
+            if (!/^\d+$/.test(values.price)) {
+                errors.price = 'Цена должна содержать только цифры';
+            }
+        
+            if (!/^\d+$/.test(values.timer)) {
+                errors.timer = 'Таймер должен содержать только цифры';
+            }
+        
+            return errors;
+        },
+        
     });
 
     const checkValidationReady = () => {
@@ -71,13 +116,16 @@ export const Reg = () => {
     return(
             <div className="auth_form">
                 <form className="auth_form_inputs" onSubmit={registrationFormik.handleSubmit}>
-                    <RegInput
+                <RegInput
                         placeholder={'Название'}
                         value={registrationFormik.values.name}
                         onChange={registrationFormik.handleChange}
                         name={'name'}
                         error={registrationFormik.errors.name}
                     />
+                    {registrationFormik.errors.name && registrationFormik.touched.name && (
+                        <div className="error-notification">{registrationFormik.errors.name}</div>
+                    )}
                     <RegInput
                         placeholder={'Описание'}
                         value={registrationFormik.values.description}
@@ -85,6 +133,9 @@ export const Reg = () => {
                         name={'description'}
                         error={registrationFormik.errors.description}
                     />
+                    {registrationFormik.errors.description && registrationFormik.touched.description && (
+                        <div className="error-notification">{registrationFormik.errors.description}</div>
+                    )}
                     <RegInput
                         placeholder={'Цена'}
                         value={registrationFormik.values.price}
@@ -92,6 +143,9 @@ export const Reg = () => {
                         name={'price'}
                         error={registrationFormik.errors.price}
                     />
+                    {registrationFormik.errors.price && registrationFormik.touched.price && (
+                        <div className="error-notification">{registrationFormik.errors.price}</div>
+                    )}
                     <RegInput
                         placeholder={'Сроки (в часах)'}
                         value={registrationFormik.values.timer}
@@ -99,24 +153,30 @@ export const Reg = () => {
                         name={'timer'}
                         error={registrationFormik.errors.timer}
                     />
+                    {registrationFormik.errors.timer && registrationFormik.touched.timer && (
+                        <div className="error-notification">{registrationFormik.errors.timer}</div>
+                    )}
                     <div className="form-group">
-                        <select
-                            id="categoryName"
-                            name="categoryName"
-                            onChange={registrationFormik.handleChange}
-                            onBlur={registrationFormik.handleBlur}
-                            value={registrationFormik.values.categoryName}
-                            className={`form-control ${registrationFormik.touched.categoryName && registrationFormik.errors.categoryName ? 'is-invalid' : ''}`}
-                        >
-                            <option value="">Выберите категорию</option>
-                            {categories.map(category => (
-                                <option key={category} value={category}>{category}</option>
-                            ))}
-                        </select>
-                        {registrationFormik.touched.categoryName && registrationFormik.errors.categoryName ? (
-                            <div className="invalid-feedback">{registrationFormik.errors.categoryName}</div>
-                        ) : null}
+                    <select
+                        id="categoryName"
+                        name="categoryName"
+                        onChange={registrationFormik.handleChange}
+                        onBlur={registrationFormik.handleBlur}
+                        value={registrationFormik.values.categoryName}
+                        className={`form-control ${registrationFormik.errors.categoryName ? 'is-invalid' : ''}`}
+                    >
+                        <option value="">Выберите категорию</option>
+                        {categories.map(category => (
+                            <option key={category} value={category}>{category}</option>
+                        ))}
+                    </select>
+                    {registrationFormik.errors.categoryName && (
+                        <div className="invalid-feedback">{registrationFormik.errors.categoryName}</div>
+                    )}
                     </div>
+                    {/* {registrationFormik.errors.timer && registrationFormik.touched.categoryName && (
+                        <div className="error-notification">{registrationFormik.errors.categoryName}</div>
+                    )} */}
                     {/* <input type="file" onChange={handleFileChange} /> */}
                     {/* <button onClick={handleUpload} type="submit" className="auth_button">
                         Создать карточку
