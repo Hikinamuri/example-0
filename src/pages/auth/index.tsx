@@ -18,14 +18,24 @@ const initialValues = {
 
 const LoginSchema = Yup.object().shape({
     email: Yup.string()
-        .email("Invalid email address format")
-        .required("Email is required"),
-    password: Yup.string().required()
+        .trim()
+        .email("Некорректный формат адреса электронной почты")
+        .required("Email обязателен"),
+    password: Yup.string()
+        .trim()
+        .min(6, 'Пароль должен содержать минимум 6 символов')
+        .max(18, 'Пароль должен содержать не более 18 символов')
+        .required("Пароль обязателен"),
 });
 
 export const Authorization = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const checkEmailReady = (email: string) => {
+        const emailRegex = /@../;
+        return emailRegex.test(email);
+    }
 
     const sendReq = async (values: any) => {
         try {
@@ -87,6 +97,9 @@ export const Authorization = () => {
                         name={'email'}
                         error={formik.errors.email}
                     />
+                    {formik.errors.email && formik.touched.email && (
+                        <div className="error">{formik.errors.email}</div>
+                    )}
                     <RegInput placeholder={'Пароль'}
                         value={formik.values.password}
                         onChange={formik.handleChange}
@@ -94,6 +107,9 @@ export const Authorization = () => {
                         type={'password'}
                         error={formik.errors.password}
                     />
+                    {formik.errors.password && formik.touched.password && (
+                        <div className="error">{formik.errors.password}</div>
+                    )}
                     <button className="auth_button" type="submit">
                         Aвторизоваться
                     </button>
