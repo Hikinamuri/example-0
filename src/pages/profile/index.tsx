@@ -101,29 +101,35 @@ export const Profile = () => {
     useEffect(() => {
         getImage();
         getProfile();
+        // getTasks();
     }, []);
 
     return (
         <div className={cl.profile}>
-            {!image && (
-                <>
-                    <label className={cl.uploadBtn} htmlFor="file">Choose Image</label>
-                    <input 
-                        className={cl.inputFile} 
-                        id="file" 
-                        type="file" 
-                        accept=".png, .jpg, .jpeg"
-                        onChange={handleFileChange} 
-                    />
+            <div className={cl.image_info}>
+                {!image && (
+                    <>
+                        <label className={cl.uploadBtn} htmlFor="file">Choose Image</label>
+                        <input 
+                            className={cl.inputFile} 
+                            id="file" 
+                            type="file" 
+                            accept=".png, .jpg, .jpeg"
+                            onChange={handleFileChange} 
+                        />
 
-                    <button className={cl.uploadBtn} onClick={handleUpload}>Upload</button>
-                </>
-            )}
-            {image && <img src={image} alt="" />}
-            <div className={cl.mainIfo}>
-                <p>{firstName}</p>
-                <p>{lastName}</p>
-                <p>{workType}</p>
+                        <button className={cl.uploadBtn} onClick={handleUpload}>Upload</button>
+                    </>
+                )}
+                {image && <img src={image} alt="" />}
+                <div className={cl.mainIfo}>
+                    <p>{firstName}</p>
+                    <p>{lastName}</p>
+                    <p>{workType}</p>
+                </div>
+            </div>
+            <div className={cl.aded_tasks}>
+                <p>Задание, которые вы взяли</p>
             </div>
             <div className={cl.exitButton} onClick={() => exit()}>
                 Выход

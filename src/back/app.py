@@ -320,6 +320,8 @@ def delete_card(card_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+
+
 @app.route('/api/delete-comp/<int:card_id>', methods=['DELETE'])
 def delete_comp(card_id):
     try:
@@ -330,6 +332,9 @@ def delete_comp(card_id):
         return jsonify({"message": "Card deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
 
 @app.route('/api/add-to-me', methods=['POST'])
 def add_to_me():
@@ -391,7 +396,7 @@ def add_to_me_comp():
 
     # Здесь выполняется добавление выбранной карточки к пользователю с указанным id
     # Например:
-    cur.execute("INSERT INTO user_cards (user_id, card_id) VALUES (%s, %s)", (user_id, card_id))
+    cur.execute("INSERT INTO user_competitions (user_id, card_id) VALUES (%s, %s)", (user_id, card_id))
     cur.execute("UPDATE competitions SET in_works = true WHERE id = %s", (card_id,))
     conn.commit()
 

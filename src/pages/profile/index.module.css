@@ -1,5 +1,6 @@
 .profile{
     display: flex;
+    flex-direction: column;
     margin-top: 10px;
     width: 100%;
     align-items: center;
@@ -15,6 +16,10 @@
     box-shadow: 0 0 20px rgba(0, 0, 255, 1); /* Размытая граница синего цвета */
 }
 
+.image_info {
+    display: flex;
+    align-items: center;
+}
 
 .inputFile {
     display: none;
@@ -46,6 +51,7 @@ background-color: #45a049; /* Изменить цвет фона при наве
 
 .mainIfo {
     display: flex;
+    flex-direction: column;
     margin-left: 15px;
     gap: 10px;
 }

@@ -178,7 +178,7 @@ export const Reg = () => {
                 <img src="./tatmis.png" alt="" />
             </div> */}
             <div className="auth_form">
-                <form className="auth_form_inputs" onSubmit={registrationFormik.handleSubmit}>
+                <form className="auth_form_inputs-reg" onSubmit={registrationFormik.handleSubmit}>
                     <p className="company_name">WiseLance</p>
                     <RegInput
                         placeholder={'Имя пользователя'}

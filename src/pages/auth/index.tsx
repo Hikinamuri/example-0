@@ -84,7 +84,7 @@ export const Authorization = () => {
     return (
         <div className="auth">
             <div className="auth_form">
-                <form className="auth_form_inputs" onSubmit={formik.handleSubmit}>
+                <form className="auth_form_inputs-reg" onSubmit={formik.handleSubmit}>
                     <p className="company_name">WiseLance</p>
                     <RegInput placeholder={'Почта'}
                         value={formik.values.email}
