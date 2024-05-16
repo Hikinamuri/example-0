@@ -25,14 +25,17 @@ const initialValues = {
 const RegistrationSchema = Yup.object().shape({
     login: Yup.string()
         .trim()
+        .min(50, 'Не менее 5 символов')
         .max(20, 'Не более 20 символов')
         .required("Имя пользователя обязательно"),
     last_name: Yup.string()
         .trim()
+        .min(50, 'Не менее 5 символов')
         .max(20, 'Не более 20 символов')
         .required("Фамилия обязательна"),
     first_name: Yup.string()
         .trim()
+        .min(50, 'Не менее 5 символов')
         .max(20, 'Не более 20 символов')
         .required("Имя обязательно"),
     patronymic: Yup.string()
