@@ -140,6 +140,7 @@ export const Reg = () => {
             setTimeout(() => {
                 if (response.status === 200 && !response.data.error) {
                     // Навигация пользователя после успешной авторизации
+                    alert('Регистрация прошла успешно!"')
                     navigate('/auth');
                 } else {
                     console.log(response.status);
@@ -184,7 +185,7 @@ export const Reg = () => {
                         error={registrationFormik.errors.login}
                     />
                     {registrationFormik.errors.login && registrationFormik.touched.login && (
-                        <div className="error">{registrationFormik.errors.login}</div>
+                        <div className="error-notification">{registrationFormik.errors.login}</div>
                     )}
                     <RegInput
                         placeholder={'Фамилия'}
@@ -194,7 +195,7 @@ export const Reg = () => {
                         error={registrationFormik.errors.last_name}
                     />
                     {registrationFormik.errors.last_name && registrationFormik.touched.last_name && (
-                        <div className="error">{registrationFormik.errors.last_name}</div>
+                        <div className="error-notification">{registrationFormik.errors.last_name}</div>
                     )}
                     <RegInput
                         placeholder={'Имя'}
@@ -204,7 +205,7 @@ export const Reg = () => {
                         error={registrationFormik.errors.first_name}
                     />
                     {registrationFormik.errors.first_name && registrationFormik.touched.first_name && (
-                        <div className="error">{registrationFormik.errors.first_name}</div>
+                        <div className="error-notification">{registrationFormik.errors.first_name}</div>
                     )}
                     <RegInput
                         placeholder={'Отчество'}
@@ -221,7 +222,7 @@ export const Reg = () => {
                         error={registrationFormik.errors.email}
                     />
                     {registrationFormik.errors.email && registrationFormik.touched.email && (
-                        <div className="error">{registrationFormik.errors.email}</div>
+                        <div className="error-notification">{registrationFormik.errors.email}</div>
                     )}
 
                     <div className="form-group">
@@ -251,7 +252,7 @@ export const Reg = () => {
                         type="password"
                     />
                     {registrationFormik.errors.password && registrationFormik.touched.password && (
-                        <div className="error">{registrationFormik.errors.password}</div>
+                        <div className="error-notification">{registrationFormik.errors.password}</div>
                     )}
                     <RegInput
                         placeholder={'Повторите пароль'}
@@ -262,7 +263,7 @@ export const Reg = () => {
                         type="password"
                     />
                     {registrationFormik.errors.password2 && registrationFormik.touched.password2 && (
-                        <div className="error">{registrationFormik.errors.password2}</div>
+                        <div className="error-notification">{registrationFormik.errors.password2}</div>
                     )}
                     <div className="radio_buttons">
                         <div>
