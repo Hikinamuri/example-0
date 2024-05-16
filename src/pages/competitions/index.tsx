@@ -32,7 +32,7 @@ export const Competitions = () => {
 
     const deleteCard = async (id: any) => {
         try {
-            const response = await axios.delete(`${baseURL}/api/delete-card/${id}`);
+            const response = await axios.delete(`${baseURL}/api/delete-comp/${id}`);
             getCards();
             console.log(response.data);
         } catch (error) {

@@ -86,11 +86,6 @@ export const Authorization = () => {
             <div className="auth_form">
                 <form className="auth_form_inputs" onSubmit={formik.handleSubmit}>
                     <p className="company_name">WiseLance</p>
-                    {formik.errors.email && (
-                        <div className="error-message">
-                            {formik.errors.email}
-                        </div>
-                    )}
                     <RegInput placeholder={'Почта'}
                         value={formik.values.email}
                         onChange={formik.handleChange}
@@ -98,7 +93,7 @@ export const Authorization = () => {
                         error={formik.errors.email}
                     />
                     {formik.errors.email && formik.touched.email && (
-                        <div className="error">{formik.errors.email}</div>
+                        <div className="error-notification">{formik.errors.email}</div>
                     )}
                     <RegInput placeholder={'Пароль'}
                         value={formik.values.password}
@@ -108,7 +103,7 @@ export const Authorization = () => {
                         error={formik.errors.password}
                     />
                     {formik.errors.password && formik.touched.password && (
-                        <div className="error">{formik.errors.password}</div>
+                        <div className="error-notification">{formik.errors.password}</div>
                     )}
                     <button className="auth_button" type="submit">
                         Aвторизоваться

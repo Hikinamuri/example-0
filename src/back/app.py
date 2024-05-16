@@ -320,7 +320,16 @@ def delete_card(card_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-
+@app.route('/api/delete-comp/<int:card_id>', methods=['DELETE'])
+def delete_comp(card_id):
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM competitions WHERE id = %s", (card_id,))
+        conn.commit()
+        cur.close()
+        return jsonify({"message": "Card deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/add-to-me', methods=['POST'])
 def add_to_me():
