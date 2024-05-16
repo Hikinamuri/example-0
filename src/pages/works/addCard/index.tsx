@@ -36,7 +36,7 @@ const categories = [
 const RegistrationSchema = Yup.object().shape({
     name: Yup.string()
         .trim()
-        .min(50, 'Не менее 5 символов')
+        .min(5, 'Не менее 5 символов')
         .max(20, 'Не более 20 символов')
         .required("Название товара обязательно"),
     description: Yup.string()

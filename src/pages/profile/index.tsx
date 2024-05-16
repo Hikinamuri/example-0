@@ -5,16 +5,20 @@ import { baseURL } from '../../baseUtl';
 
 import cl from './index.module.css'
 
-// interface ProfileData {
-//     first_name: string;
-//     last_name: string;
-//     taken_cards: [];
-//     work_type: string;
-// }
+interface Card {
+    id: string;
+    card_name: string;
+    categoryname: string;
+    description: string;
+    price: string;
+    timer: string;
+}
+
 export const Profile = () => {
     const [file, setFile] = useState(null);
     const navigate = useNavigate();
     const [image, setImage] = useState<string | null>(null);
+    const [tasks, setTasks] = useState<Card[] | null>(null);
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
     const [workType, setWorkType] = useState<string>('');
@@ -41,6 +45,42 @@ export const Profile = () => {
             console.error('Ошибка при получении изображения:', error);
         }
     }
+
+    const getTasks = async () => {
+        try {
+            const response = await axios.get(`${baseURL}/api/get-user-cards`, {
+                headers: {
+                    'Authorization': access_token,
+                }
+            });
+            
+            const cardIds = response.data.user_cards.map((card: { card_id: number }) => card.card_id);
+    
+            const tasksPromises = cardIds.map(async (cardId: number) => {
+                try {
+                    const cardResponse = await axios.get(`${baseURL}/api/get-card?id=${cardId}`, {
+                        headers: {
+                            'Authorization': access_token,
+                        }
+                    });
+                    return cardResponse.data.card as Card; // Приведение типа к интерфейсу Card
+                } catch (error) {
+                    console.error(`Ошибка при получении карточки с id ${cardId}:`, error);
+                    return null; 
+                }
+            });
+    
+            const tasks = await Promise.all(tasksPromises);
+    
+            setTasks(tasks.filter((task: Card | null) => task !== null)); 
+    
+        } catch (error) {
+            console.error('Ошибка при получении списка карточек:', error);
+        }
+    }
+    
+    
+    
 
     const prepareFields = async (data: any) => {
         console.log('image1')
@@ -101,7 +141,7 @@ export const Profile = () => {
     useEffect(() => {
         getImage();
         getProfile();
-        // getTasks();
+        getTasks();
     }, []);
 
     return (
@@ -129,7 +169,23 @@ export const Profile = () => {
                 </div>
             </div>
             <div className={cl.aded_tasks}>
-                <p>Задание, которые вы взяли</p>
+                <p className={cl.main_name}>Задание, которые вы взяли</p>
+                <div className={cl.speciality_list}>
+                    {tasks?.map(card => (
+                        <div key={card.id} className={cl.card}>
+                            <p className={cl.card_name} >{card.card_name}</p>
+                            <div className={cl.price_time}>
+                                <p className={cl.card_price}>{card.price} ₽</p>
+                                {parseInt(card.timer) > 24 ? 
+                                    `${Math.floor(parseInt(card.timer) / 24)} дней ${parseInt(card.timer) % 24} часов` :
+                                    `${parseInt(card.timer)} часов`
+                                }
+                            </div>
+                            <p className={cl.card_description}>{card.description}</p>
+                            <p className={cl.categoryName}>{card.categoryname}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
             <div className={cl.exitButton} onClick={() => exit()}>
                 Выход

@@ -370,6 +370,66 @@ def add_to_me():
 
 
 
+@app.route('/api/get-user-cards', methods=['GET'])
+def get_user_cards():
+    # Получаем токен авторизации из заголовков запроса
+    authorization_token = request.headers.get('Authorization')
+
+    if not authorization_token:
+        return jsonify({'error': 'Authorization token not provided'}), 401
+
+    # Проверяем наличие пользователя с данным токеном авторизации
+    cur = conn.cursor()
+    cur.execute("SELECT id FROM clients WHERE token = %s", (authorization_token,))
+    user_result = cur.fetchone()
+
+    if not user_result:
+        return jsonify({'error': 'User not found'}), 404
+
+    user_id = user_result[0]
+
+    # Получаем все записи из таблицы user_cards, где user_id равен id пользователя
+    cur.execute("SELECT * FROM user_cards WHERE user_id = %s", (user_id,))
+    user_cards = cur.fetchall()
+
+    # Собираем результаты в список для вывода
+    user_card_list = [{'id': row[0], 'user_id': row[1], 'card_id': row[2]} for row in user_cards]
+
+    return jsonify({'user_cards': user_card_list}), 200
+
+
+
+@app.route('/api/get-card', methods=['GET'])
+def get_card():
+    # Получаем id карточки из параметров запроса
+    card_id = request.args.get('id')
+
+    if not card_id:
+        return jsonify({'error': 'Card id not provided'}), 400
+
+    # Выполняем запрос к таблице cards
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM cards WHERE id = %s", (card_id,))
+    card_data = cur.fetchone()
+
+    if not card_data:
+        return jsonify({'error': 'Card not found'}), 404
+
+    # Формируем JSON-ответ с данными карточки
+    card = {
+        'id': card_data[0],
+        'card_name': card_data[6],
+        'description': card_data[3],
+        'price': card_data[2],
+        'timer': card_data[4],
+        'categoryName': card_data[5]
+        # Добавьте другие поля, если необходимо
+    }
+
+    return jsonify({'card': card}), 200
+
+
+
 @app.route('/api/add-to-me-comp', methods=['POST'])
 def add_to_me_comp():
     # Получаем id выбранной карточки из тела запроса

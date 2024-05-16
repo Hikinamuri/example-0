@@ -60,3 +60,69 @@ background-color: #45a049; /* Изменить цвет фона при наве
     font-size: 28px;
     margin: 0;
 }
+
+.speciality_list {
+    display: flex;
+    flex-wrap: wrap;
+    width: 70%;
+    margin-left: auto;
+    gap: 20px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    height: 200px;
+    background-color: #8fb7dd;
+    border-radius: 15px;
+    padding: 15px 15px;
+}
+
+.card:hover {
+    background-color: #71a6d8;
+}
+
+.card_name {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.aded_tasks {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.main_name {
+    font-size: 36px;
+    align-items: center;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.card_price {
+    font-size: 24px;
+    font-weight: 500;
+    width: 30%;
+}
+
+.price_time {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.card_description {
+    height: 75px;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    
+}
