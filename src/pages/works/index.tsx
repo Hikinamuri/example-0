@@ -77,8 +77,17 @@ export const Works = () => {
     ];
 
     const filteredCards = cards.filter(card => {
-        return card.card_name.toLowerCase().includes(searchTerm.toLowerCase()) || card.description.toLowerCase().includes(searchTerm.toLowerCase()) || card.categoryname.toLowerCase().includes(searchTerm.toLowerCase());
+        const cardName = card.card_name ? card.card_name.toLowerCase() : '';
+        const description = card.description ? card.description.toLowerCase() : '';
+        const categoryName = card.categoryname ? card.categoryname.toLowerCase() : '';
+        
+        const searchTermLower = searchTerm.toLowerCase();
+    
+        return cardName.includes(searchTermLower) || 
+               description.includes(searchTermLower) || 
+               categoryName.includes(searchTermLower);
     });
+    
 
     const getCards = () => {
         axios.get(`${baseURL}/api/get-cards`)
@@ -104,7 +113,7 @@ export const Works = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)} // Обработчик изменения значения поиска
                 />
-                {userType === 'true' && (
+                {userType === 'zakazchik' && (
                     <div 
                         className={cl.add_card}
                         onClick={() => toggleModal()}
@@ -131,7 +140,7 @@ export const Works = () => {
                                     </div>
                                     <p className={cl.card_description}>{card.description}</p>
                                     <p className={cl.categoryName}>{card.categoryname}</p>
-                                    {userType === 'true' ? (
+                                    {userType === 'zakazchik' ? (
                                         <div 
                                             className={cl.delete_card}
                                             onClick={() => deleteCard(card.id)}

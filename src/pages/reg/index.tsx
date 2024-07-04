@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import axios from "axios";
 // import ClientAccountingAPI from "../../modules/auth/api/ClientAccountingAPI.ts";
 import notificationsActionConstants from "../../store/actions/notificationsActionConstants.ts";
-import { goodMove, badRegistration } from "../../store/actions/notificationsActions.ts";
+import { badRegistration } from "../../store/actions/notificationsActions.ts";
 import { RegInput } from "./regInput/index.tsx";
 
 import './reg.css'
@@ -45,8 +45,6 @@ const RegistrationSchema = Yup.object().shape({
         .trim()
         .email("Некорректный формат адреса электронной почты")
         .required("Email обязателен"),
-    categoryName: Yup.string()
-        .required("Категория обязательна"),
     password: Yup.string()
         .trim()
         .min(6, 'Пароль должен содержать минимум 6 символов')
@@ -66,17 +64,6 @@ export const Reg = () => {
         const emailRegex = /@../;
         return emailRegex.test(email);
     }
-
-    const categories = [
-        { name: 'Все категории', id: ''},
-        { name: 'Программирование', id: 'Программирование'},
-        { name: 'Дизайн', id: 'Дизайн'},
-        { name: 'Услуги', id: 'Услуги'},
-        { name: 'Работа с текстом', id: 'Работа с текстом'},
-        { name: 'Маркетинг', id: 'Маркетинг'},
-        { name: 'Архитектура', id: 'Архитектура'},
-        { name: 'Приложения', id: 'Приложения'},
-    ];
 
     // const checkPasswordReady = (password: string) => {
     //     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^\w\s]).{8,}/;
@@ -136,7 +123,6 @@ export const Reg = () => {
                 email: registrationFormik.values.email, 
                 password: registrationFormik.values.password,
                 userType: registrationFormik.values.userType === 'customer',
-                categoryName: registrationFormik.values.categoryName, 
             });
             console.log('request', response)
     
@@ -227,25 +213,6 @@ export const Reg = () => {
                     {registrationFormik.errors.email && registrationFormik.touched.email && (
                         <div className="error-notification">{registrationFormik.errors.email}</div>
                     )}
-
-                    <div className="form-group">
-                        <select
-                            id="categoryName"
-                            name="categoryName"
-                            onChange={registrationFormik.handleChange}
-                            onBlur={registrationFormik.handleBlur}
-                            value={registrationFormik.values.categoryName}
-                            className={`form-control ${registrationFormik.touched.categoryName && registrationFormik.errors.categoryName ? 'is-invalid' : ''}`}
-                        >
-                            <option value="">Выберите категорию</option>
-                            {categories.map(category => (
-                                <option key={category.id} value={category.id}>{category.name}</option>
-                            ))}
-                        </select>
-                        {registrationFormik.touched.categoryName && registrationFormik.errors.categoryName ? (
-                            <div className="invalid-feedback">{registrationFormik.errors.categoryName}</div>
-                        ) : null}
-                    </div>
                     <RegInput
                         placeholder={'Пароль'}
                         value={registrationFormik.values.password}

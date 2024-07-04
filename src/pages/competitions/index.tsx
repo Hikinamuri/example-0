@@ -107,7 +107,7 @@ export const Competitions = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)} // Обработчик изменения значения поиска
                 />
-                {userType === 'true' && (
+                {userType === 'zakazchik' && (
                     <div 
                         className={cl.add_card}
                         onClick={() => toggleModal()}
@@ -134,7 +134,7 @@ export const Competitions = () => {
                                     </div>
                                     <p className={cl.card_description}>{card.description}</p>
                                     <p className={cl.categoryName}>{card.categoryname}</p>
-                                    {userType === 'true' ? (
+                                    {userType === 'zakazchik' ? (
                                         <div 
                                             className={cl.delete_card}
                                             onClick={() => deleteCard(card.id)}

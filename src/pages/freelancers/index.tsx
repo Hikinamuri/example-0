@@ -1,6 +1,7 @@
 import cl from './index.module.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import ProfileIcon from '../../assets/profile.svg';
 import { baseURL } from '../../baseUtl';
 
 interface Client {
@@ -70,7 +71,7 @@ export const Freelancers = () => {
                     <div className={cl.speciality_list}>
                         {filteredClients.map(client => (
                             <div className={cl.client_card} key={client.id}>
-                                <img src={client.profile_photo} alt='' />
+                                <img src={ProfileIcon} alt='' />
                                 <div className={cl.client_info_work_type}>
                                     <div className={cl.client_info}>
                                         <p>{client.first_name}</p>
@@ -91,7 +92,7 @@ export const Freelancers = () => {
                     <div className={cl.speciality_list}>
                         {filteredEmployeers.map(employeer => (
                             <div className={cl.client_card} key={employeer.id}>
-                                <img src={employeer.profile_photo} alt='' />
+                                <img src={ProfileIcon} alt='' />
                                 <div className={cl.client_info_work_type}>
                                     <div className={cl.client_info}>
                                         <p>{employeer.first_name}</p>

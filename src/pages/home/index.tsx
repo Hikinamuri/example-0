@@ -4,7 +4,7 @@ import axios from 'axios';
 import cl from './index.module.css';
 
 import logo from '../../assets/logo.png';
-import defaultLogo from '../../assets/default.png'
+import ProfileIcon from '../../assets/profile.svg'
 
 import developing from '../../assets/developing.png';
 import copywriter from '../../assets/copywriter.png';
@@ -101,7 +101,7 @@ export const Home = () => {
                 <div className={cl.speciality_list}>
                     {clients.map(client => (
                         <div className={cl.client_card}>
-                            <img src={client.profile_photo} alt='' />
+                            <img src={ProfileIcon} alt='' />
                             <div className={cl.client_info_work_type}>
                                 <div className={cl.client_info}>
                                     <p>{client.first_name}</p>

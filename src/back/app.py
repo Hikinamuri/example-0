@@ -40,10 +40,11 @@ def upload_file_to_s3(file, s3_key):
 
 # Подключение к базе данных PostgreSQL
 conn = psycopg2.connect(
-    host="147.45.138.94",
+    host="82.97.255.161",
     database="default_db",
     user="gen_user",
-    password="?{,xy%m3)beqov"
+    password="u{NH6Qlu|o3(Gg",
+    options='-c search_path=public'
 )
 
 @app.after_request
@@ -64,13 +65,22 @@ def save_user():
         return jsonify({'error': 'Missing fields'}), 400
     
     print("Data to insert:", data)
-    hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt(rounds=12))
 
     # Сохранение пользователя в базе данных
     cur = conn.cursor()
-    cur.execute("INSERT INTO clients (login, last_name, first_name, patronymic, email, password, type, work_type) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-            (data['login'], data['last_name'], data['first_name'], data['patronymic'], data['email'], hashed_password, data['userType'], data['categoryName']))
-
+    if data['userType'] == True:
+        cur.execute("INSERT INTO zakazchik (login, last_name, first_name, patronymic, email, password) VALUES (%s, %s, %s, %s, %s, %s)",
+                (data['login'], data['last_name'], data['first_name'], data['patronymic'], data['email'], data['password']))
+        conn.commit()
+        cur.close()
+    elif data['userType'] == False:
+        cur.execute("INSERT INTO ispolnitel (login, last_name, first_name, patronymic, email, password) VALUES (%s, %s, %s, %s, %s, %s)",
+                (data['login'], data['last_name'], data['first_name'], data['patronymic'], data['email'], data['password']))
+        conn.commit()
+        cur.close()
+    else:
+        return jsonify({'error': 'Invalid user type'}), 400
+        
     conn.commit()
     cur.close()
 
@@ -86,43 +96,46 @@ def auth_user():
     if 'email' not in data or 'password' not in data:
         return jsonify({'error': 'Missing fields'}), 400
 
-    # Получение хэшированного пароля из базы данных для данного email
+    # Получение хэшированного пароля и id из базы данных для данного email
     cur = conn.cursor()
-    cur.execute("SELECT password FROM clients WHERE email = %s", (data['email'],))
-    stored_password = cur.fetchone()
-
-    print (stored_password)
+    cur.execute("SELECT id, password FROM zakazchik WHERE email = %s", (data['email'],))
+    user = cur.fetchone()
 
     # Проверка, найден ли пользователь с таким email
-    if stored_password:
-        # Сравнение введенного пользователем пароля с хэшированным паролем из базы данных
-        if bcrypt.checkpw(data['password'].encode('utf-8'), stored_password[0].tobytes()):
-            access_token = create_access_token(identity=data['email'])
-            cur.execute("UPDATE clients SET token = %s WHERE email = %s", (access_token, data['email']))
-            if 'email' in data and isinstance(data['email'], str):
-                cur.execute("SELECT type FROM clients WHERE email = %s", (data['email'],))
-                userType = cur.fetchone()[0]
-            else:
-                return jsonify({'error': 'Invalid email format'}), 400
-            conn.commit()
+    if user:
+        ID_zakazchik, stored_password = user
+        # Проверка пароля
+        if (data['password'] == stored_password):
             cur.close()
-            return jsonify({'access_token': access_token, 'userType': userType}), 200
+            return jsonify({'type': 'zakazchik', 'id': ID_zakazchik}), 200
         else:
-            return jsonify({'error': 'Authentication failed'}), 401
-    else:
-        return jsonify({'error': 'Authentication failed'}), 401
+            cur.execute("SELECT id, password FROM ispolnitel WHERE email = %s", (data['email'],))
+            user = cur.fetchone()
 
+            if user:
+                ID_Ispolnitel, stored_password = user
+                # Проверка пароля
+                if (data['password'] == stored_password):
+                    cur.close()
+                    return jsonify({'type': 'ispolnitel', 'id': ID_Ispolnitel}), 200
+                else:
+                    cur.close()
+                    return jsonify({'error': 'Invalid password'}), 400
+            else:
+                cur.close()
+                return jsonify({'error': 'Invalid email or password'}), 400
+        
 
 
 @app.route('/api/get-users', methods=['GET'])
 def get_users():
     cur = conn.cursor()
-    cur.execute("SELECT id, login, first_name, work_type, profile_photo FROM clients WHERE type = false")
+    cur.execute("SELECT id, login, first_name FROM ispolnitel")
     users = cur.fetchall()
     cur.close()
 
     # Преобразование результата запроса в список словарей
-    user_list = [{'id': user[0], 'login': user[1], 'first_name': user[2], 'work_type': user[3], 'profile_photo': user[4]} for user in users]
+    user_list = [{'id': user[0], 'login': user[1], 'first_name': user[2]} for user in users]
 
     return jsonify(user_list), 200
 
@@ -131,80 +144,37 @@ def get_users():
 @app.route('/api/get-employeers', methods=['GET'])
 def get_employeers():
     cur = conn.cursor()
-    cur.execute("SELECT id, login, first_name, work_type, profile_photo FROM clients WHERE type = true")
+    cur.execute("SELECT id, login, first_name FROM zakazchik")
     users = cur.fetchall()
     cur.close()
 
     # Преобразование результата запроса в список словарей
-    user_list = [{'id': user[0], 'login': user[1], 'first_name': user[2], 'work_type': user[3], 'profile_photo': user[4]} for user in users]
+    user_list = [{'id': user[0], 'login': user[1], 'first_name': user[2]} for user in users]
 
     return jsonify(user_list), 200
-
-
-
-@app.route('/api/upload-image', methods=['POST'])
-def upload_image():
-    if 'image' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
-    
-    file = request.files['image']
-    headers = request.headers
-
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-
-    if file:
-        filename = secure_filename(file.filename)
-        cur = conn.cursor()
-        cur.execute("SELECT id FROM clients WHERE token = %s", (headers['Authorization'],))
-        print(headers['Authorization'])
-        result = cur.fetchone()
-        if result:
-            userId = result[0]
-            s3_key = f"uploads/{userId}/{filename}"
-            if upload_file_to_s3(file, s3_key):
-                cur.execute("UPDATE clients SET profile_photo = %s WHERE token = %s", (f'https://f8227d6f-1ac14f84-99ef-4e5f-80e3-92250408b33e.s3.timeweb.cloud/uploads/{userId}/{filename}', headers['Authorization']))
-                conn.commit()
-                return jsonify({'message': 'Image uploaded successfully', 'filename': f'https://s3.timeweb.cloud/f8227d6f-1ac14f84-99ef-4e5f-80e3-92250408b33e/uploads/{userId}/{filename}'}), 200
-            else:
-                return jsonify({'error': 'Failed to upload image to S3'}), 500
-        else:
-            return jsonify({'error': 'User not found'}), 404
-
-
-
-@app.route('/api/get-image', methods=['POST'])
-def get_image():
-    headers = request.headers
-    cur = conn.cursor()
-    cur.execute("SELECT profile_photo FROM clients WHERE token = %s", (headers['Authorization'],))
-    profile_photo = cur.fetchone()[0]
-
-    if profile_photo: 
-        return jsonify({'message': profile_photo}), 200
-    else: 
-        return jsonify({'error': 'Failed to upload image to S3'}), 500
     
 
 
 @app.route('/api/get-profile', methods=['POST'])
 def get_profile():
-    headers = request.headers
-    cur = conn.cursor()
+    # Получение данных из тела запроса
+    access_token = request.headers.get('Authorization')
+    user_type = request.form.get('user_type')
 
+    cur = conn.cursor()
+    
     # Запрос данных о клиенте
-    cur.execute("SELECT first_name, last_name, work_type, taken_cards FROM clients WHERE token = %s", (headers['Authorization'],))
+    query = f"SELECT first_name, last_name FROM {user_type} WHERE id = %s"
+    cur.execute(query, access_token)
     client_data = cur.fetchone()
     if not client_data:
         return jsonify({'error': 'User not found'}), 404
 
-    first_name, last_name, work_type, taken_cards = client_data
+    first_name, last_name = client_data
 
     return jsonify({
         'first_name': first_name,
         'last_name': last_name,
-        'work_type': work_type,
-        'taken_cards': taken_cards
     }), 200
 
 
@@ -229,7 +199,7 @@ def add_card():
 
     # Сохраняем пользователя в базе данных
     cur = conn.cursor()
-    cur.execute("INSERT INTO cards (card_name, price, description, timer, categoryname) VALUES (%s, %s, %s, %s, %s)",
+    cur.execute("INSERT INTO zakaz (card_name, price, opisaniye, vremya, kategoria) VALUES (%s, %s, %s, %s, %s)",
             (name, price, description, timer, categoryName))
     conn.commit()
     cur.close()
@@ -247,7 +217,7 @@ def get_cards():
         if not conn.isolation_level:
             conn.rollback()
 
-        cur.execute("SELECT id, price, description, timer, categoryname, card_name FROM cards WHERE in_works = false")
+        cur.execute("SELECT id, price, opisaniye, vremya, kategoria, card_name FROM zakaz WHERE idispolnitel IS NULL")
         cards = cur.fetchall()
         cur.close()
 
@@ -279,8 +249,8 @@ def add_contest():
 
     # Сохраняем пользователя в базе данных
     cur = conn.cursor()
-    cur.execute("INSERT INTO competitions (cards, price, description, timer, categoryname, in_works) VALUES (%s, %s, %s, %s, %s, %s)",
-            (name, price, description, timer, categoryName, 'false'))
+    cur.execute("INSERT INTO konkurs (cards, price, opisaniye, vremya, kategoria) VALUES (%s, %s, %s, %s, %s)",
+            (name, price, description, timer, categoryName))
     conn.commit()
     cur.close()
 
@@ -297,7 +267,7 @@ def get_contest():
         if not conn.isolation_level:
             conn.rollback()
 
-        cur.execute("SELECT id, price, description, timer, categoryname, cards FROM competitions WHERE in_works = false")
+        cur.execute("SELECT id, price, opisaniye, vremya, kategoria, cards FROM konkurs WHERE idispolnitel IS NULL")
         cards = cur.fetchall()
         cur.close()
 
@@ -313,7 +283,7 @@ def get_contest():
 def delete_card(card_id):
     try:
         cur = conn.cursor()
-        cur.execute("DELETE FROM cards WHERE id = %s", (card_id,))
+        cur.execute("DELETE FROM zakaz WHERE id = %s", (card_id,))
         conn.commit()
         cur.close()
         return jsonify({"message": "Card deleted successfully"}), 200
@@ -326,7 +296,7 @@ def delete_card(card_id):
 def delete_comp(card_id):
     try:
         cur = conn.cursor()
-        cur.execute("DELETE FROM competitions WHERE id = %s", (card_id,))
+        cur.execute("DELETE FROM konkurs WHERE id = %s", (card_id,))
         conn.commit()
         cur.close()
         return jsonify({"message": "Card deleted successfully"}), 200
@@ -347,24 +317,10 @@ def add_to_me():
     # Получаем токен авторизации из заголовков запроса
     authorization_token = request.headers.get('Authorization')
 
-    if not authorization_token:
-        return jsonify({'error': 'Authorization token not provided'}), 401
-
-    # Проверяем наличие пользователя с данным токеном авторизации
     cur = conn.cursor()
-    cur.execute("SELECT id FROM clients WHERE token = %s", (authorization_token,))
-    user_result = cur.fetchone()
-
-    if not user_result:
-        return jsonify({'error': 'User not found'}), 404
-
-    user_id = user_result[0]
-
-    # Здесь выполняется добавление выбранной карточки к пользователю с указанным id
-    # Например:
-    cur.execute("INSERT INTO user_cards (user_id, card_id) VALUES (%s, %s)", (user_id, card_id))
-    cur.execute("UPDATE cards SET in_works = true WHERE id = %s", (card_id,))
+    cur.execute("UPDATE zakaz SET idispolnitel = %s WHERE id = %s", (authorization_token, card_id))
     conn.commit()
+    cur.close()
 
     return jsonify({'message': 'Card added successfully'}), 200
 
@@ -380,20 +336,12 @@ def get_user_cards():
 
     # Проверяем наличие пользователя с данным токеном авторизации
     cur = conn.cursor()
-    cur.execute("SELECT id FROM clients WHERE token = %s", (authorization_token,))
-    user_result = cur.fetchone()
-
-    if not user_result:
-        return jsonify({'error': 'User not found'}), 404
-
-    user_id = user_result[0]
-
-    # Получаем все записи из таблицы user_cards, где user_id равен id пользователя
-    cur.execute("SELECT * FROM user_cards WHERE user_id = %s", (user_id,))
+    cur.execute("SELECT * FROM zakaz WHERE idispolnitel = %s", (authorization_token,))
     user_cards = cur.fetchall()
-
+    conn.commit()
+    cur.close()
     # Собираем результаты в список для вывода
-    user_card_list = [{'id': row[0], 'user_id': row[1], 'card_id': row[2]} for row in user_cards]
+    user_card_list = [{'id': row[0]} for row in user_cards]
 
     return jsonify({'user_cards': user_card_list}), 200
 
@@ -409,7 +357,7 @@ def get_card():
 
     # Выполняем запрос к таблице cards
     cur = conn.cursor()
-    cur.execute("SELECT * FROM cards WHERE id = %s", (card_id,))
+    cur.execute("SELECT * FROM zakaz WHERE id = %s", (card_id,))
     card_data = cur.fetchone()
 
     if not card_data:
@@ -419,10 +367,10 @@ def get_card():
     card = {
         'id': card_data[0],
         'card_name': card_data[6],
-        'description': card_data[3],
+        'opisaniye': card_data[3],
         'price': card_data[2],
-        'timer': card_data[4],
-        'categoryName': card_data[5]
+        'vremya': card_data[4],
+        'kategoria': card_data[5]
         # Добавьте другие поля, если необходимо
     }
 
@@ -441,24 +389,13 @@ def add_to_me_comp():
     # Получаем токен авторизации из заголовков запроса
     authorization_token = request.headers.get('Authorization')
 
-    if not authorization_token:
-        return jsonify({'error': 'Authorization token not provided'}), 401
-
     # Проверяем наличие пользователя с данным токеном авторизации
     cur = conn.cursor()
-    cur.execute("SELECT id FROM clients WHERE token = %s", (authorization_token,))
-    user_result = cur.fetchone()
-
-    if not user_result:
-        return jsonify({'error': 'User not found'}), 404
-
-    user_id = user_result[0]
-
     # Здесь выполняется добавление выбранной карточки к пользователю с указанным id
     # Например:
-    cur.execute("INSERT INTO user_competitions (user_id, card_id) VALUES (%s, %s)", (user_id, card_id))
-    cur.execute("UPDATE competitions SET in_works = true WHERE id = %s", (card_id,))
+    cur.execute("UPDATE konkurs SET idispolnitel = %s WHERE id = %s", (authorization_token, card_id))
     conn.commit()
+    cur.close()
 
     return jsonify({'message': 'Card added successfully'}), 200
 

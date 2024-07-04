@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { baseURL } from '../../baseUtl';
+import ProfileIcon from '../../assets/profile.svg';
 
 import cl from './index.module.css'
 
@@ -15,9 +16,8 @@ interface Card {
 }
 
 export const Profile = () => {
-    const [file, setFile] = useState(null);
     const navigate = useNavigate();
-    const [image, setImage] = useState<string | null>(null);
+    // const [image, setImage] = useState<string | null>(null);
     const [tasks, setTasks] = useState<Card[] | null>(null);
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
@@ -25,26 +25,24 @@ export const Profile = () => {
     // const [profileData, setProfileData] = useState();
 
     const access_token = String(localStorage.getItem('token'));
+    const user_type = String(localStorage.getItem('type'));
 
-    const handleFileChange = (e: any) => {
-        setFile(e.target.files[0]);
-    };
 
-    const getImage = async () => {
-        try {
-            const response = await axios.post(`${baseURL}/api/get-image`, null, {
-                headers: {
-                    'Authorization': access_token,
-                    'Content-Type': 'multipart/form-data' 
-                }
-            });
+    // const getImage = async () => {
+    //     try {
+    //         const response = await axios.post(`${baseURL}/api/get-image`, null, {
+    //             headers: {
+    //                 'Authorization': access_token,
+    //                 'Content-Type': 'multipart/form-data' 
+    //             }
+    //         });
             
-            const imageUrl = response.data.message; // URL изображения
-            setImage(imageUrl);
-        } catch (error) {
-            console.error('Ошибка при получении изображения:', error);
-        }
-    }
+    //         const imageUrl = response.data.message; // URL изображения
+    //         setImage(imageUrl);
+    //     } catch (error) {
+    //         console.error('Ошибка при получении изображения:', error);
+    //     }
+    // }
 
     const getTasks = async () => {
         try {
@@ -54,7 +52,7 @@ export const Profile = () => {
                 }
             });
             
-            const cardIds = response.data.user_cards.map((card: { card_id: number }) => card.card_id);
+            const cardIds = response.data.user_cards.map((card: { id: number }) => card.id);
     
             const tasksPromises = cardIds.map(async (cardId: number) => {
                 try {
@@ -93,45 +91,22 @@ export const Profile = () => {
 
     const getProfile = async () => {
         try {
-            const response = await axios.post(`${baseURL}/api/get-profile`, null, {
+            const formData = new FormData();
+            formData.append('user_type', user_type);
+        
+            const response = await axios.post(`${baseURL}/api/get-profile`, formData, {
                 headers: {
                     'Authorization': access_token,
-                    'Content-Type': 'multipart/form-data' 
+                    'Content-Type': 'multipart/form-data'
                 }
             });
             
             prepareFields(response.data);
         } catch (error) {
-            console.error('Ошибка при получении изображения:', error);
-        }
-    }
-    
-
-    const handleUpload = async () => {
-        if (!file) {
-            console.error("No file selected");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('image', file);
-
-        if (typeof access_token !== 'string') return
-
-        try {
-            const response = await axios.post(`${baseURL}/api/upload-image`, formData, {
-                headers: {
-                    'Authorization': access_token,
-                    'Content-Type': 'multipart/form-data' 
-                }
-            });
-            console.log('Image uploaded successfully:', response.data);
-            getImage();
-
-        } catch (error) {
-            console.error('Error uploading image:', error);
+            console.error('Ошибка при получении профиля:', error);
         }        
-    };
+    }
+
 
     const exit = () => {
         localStorage.clear();
@@ -139,7 +114,7 @@ export const Profile = () => {
     }
 
     useEffect(() => {
-        getImage();
+        // getImage();
         getProfile();
         getTasks();
     }, []);
@@ -147,7 +122,7 @@ export const Profile = () => {
     return (
         <div className={cl.profile}>
             <div className={cl.image_info}>
-                {!image && (
+                {/* {!image && (
                     <>
                         <label className={cl.uploadBtn} htmlFor="file">Choose Image</label>
                         <input 
@@ -160,8 +135,8 @@ export const Profile = () => {
 
                         <button className={cl.uploadBtn} onClick={handleUpload}>Upload</button>
                     </>
-                )}
-                {image && <img src={image} alt="" />}
+                )} */}
+                <img src={ProfileIcon} alt="Профиль" />
                 <div className={cl.mainIfo}>
                     <p>{firstName}</p>
                     <p>{lastName}</p>

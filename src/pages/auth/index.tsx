@@ -32,11 +32,6 @@ export const Authorization = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const checkEmailReady = (email: string) => {
-        const emailRegex = /@../;
-        return emailRegex.test(email);
-    }
-
     const sendReq = async (values: any) => {
         try {
             const response = await axios.post(`${baseURL}/api/auth-user`, {
@@ -44,8 +39,8 @@ export const Authorization = () => {
                 password: values.password
             });
             localStorage.clear();
-            localStorage.setItem('token', `${response.data.access_token}`);
-            localStorage.setItem('type', `${response.data.userType}`);
+            localStorage.setItem('token', `${response.data.id}`);
+            localStorage.setItem('type', `${response.data.type}`);
             dispatch(goodMove({
                 type: notificationsActionConstants.GOOD_MOVE,
                 payload: 'Успешно авторизованы'
